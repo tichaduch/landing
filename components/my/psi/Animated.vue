@@ -1,9 +1,9 @@
 <template>
   <v-card class="mt-4 pa-4">
     <v-row no-gutters>
-      <svg width="400" height="400" version="1.1" viewBox="0 0 105.83 105.83" xmlns="http://www.w3.org/2000/svg">
+      <svg @pointermove.self="onPointer" width="400" height="400" version="1.1" viewBox="0 0 105.83 105.83" xmlns="http://www.w3.org/2000/svg">
         <g ref="psi" fill="#f00">
-          <circle @mouseover="onHover(circle, index, $event)" v-for="({circle, animation}, index) in circlesListAnimated" :cx="circle.cx"
+          <circle v-for="({circle, animation}, index) in circlesListAnimated" :cx="circle.cx"
             :cy="circle.cy" :r="circle.r">
             <animate :attributeName="animation.attributeName" :values="animation.values" :dur="animation.duration" :repeatCount="animation.repeatCount" />
           </circle>
@@ -12,9 +12,11 @@
     </v-row>
     <v-row no-gutters>
       <div>
-        {{ circleIndexInFocus }}
         |*****|
-        <div v-if="circleInFocus">{{ circlesListAnimated[circleIndexInFocus].meta }}</div>
+        <div>{{ `${pointerLastPositionX} x ${pointerLastPositionY}` }}</div>
+        |*****|
+        <div>{{ svgFocus }}</div>
+
       </div>
     </v-row>
 
@@ -22,9 +24,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useTemplateRef } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useDisplay, useLayout } from 'vuetify';
-
+//  @mouseover="onHover(circle, index, $event)"
 type Circle = {
   cx: string,
   cy: string,
@@ -52,28 +54,35 @@ export default defineComponent({
     const message = ref('This is a message')
     const display = useDisplay();
     const layout = useLayout();
-    const psi = useTemplateRef('psi');
 
-    const circleIndexInFocus = ref(-1);
+    const pointerLastPositionX = ref(-1);
+    const pointerLastPositionY = ref(-1);
 
-    const onHover = (circle: Circle, index: number, event: Event) => {
-      circleIndexInFocus.value = index;
-      if (!event.target) {
-        return;
-      }
-      const circleNode = event.target as SVGCircleElement;
-      const animateNode = circleNode.firstChild as SVGAnimateElement;
+    const onPointer = (event: PointerEvent) => {
+      const svgNode = event.target as SVGElement;
 
-      animateNode.beginElement();
-    };
+      pointerLastPositionX.value = event.clientX - svgNode.getBoundingClientRect().x;
+      pointerLastPositionY.value = event.clientY - svgNode.getBoundingClientRect().y;
+    }
 
-    const circleInFocus = computed(() => {
-      if (circleIndexInFocus.value < 0) {
+    const svgFocus = computed(() => {
+      if (pointerLastPositionX.value < 0) {
         return null;
       }
 
-      return circlesList[circleIndexInFocus.value];
+      return {
+        cx: Math.round((pointerLastPositionX.value / 400) * 110),
+        cy: Math.round((pointerLastPositionY.value / 400) * 110),
+      }
     });
+
+    // const circleInFocus = computed(() => {
+    //   if (circleIndexInFocus.value < 0) {
+    //     return null;
+    //   }
+
+    //   return circlesList[circleIndexInFocus.value];
+    // });
 
     const circlesListAnimated = computed(() => {
       return circlesList.map((circle, index) => {
@@ -83,19 +92,19 @@ export default defineComponent({
         const canvasSize = 110 * 1000;
 
         let proximityToFocus = 1;
-        if (circleInFocus.value) {
-          const proximityX = Math.abs((Number(circleInFocus.value.cx) * baseMultiplyer) - (Number(circle.cx) * baseMultiplyer)) / canvasSize;
-          const proximityY = Math.abs((Number(circleInFocus.value.cy) * baseMultiplyer) - (Number(circle.cy) * baseMultiplyer)) / canvasSize;
+        if (svgFocus.value) {
+          const proximityX = Math.abs((Number(svgFocus.value.cx) * baseMultiplyer) - (Number(circle.cx) * baseMultiplyer)) / canvasSize;
+          const proximityY = Math.abs((Number(svgFocus.value.cy) * baseMultiplyer) - (Number(circle.cy) * baseMultiplyer)) / canvasSize;
           proximityToFocus = Math.sqrt(proximityX ** 2 + proximityY ** 2);
         }
 
         let realSize = (Number(circle.r) * baseMultiplyer * 0.2) / baseMultiplyer;
 
-        if (index === circleIndexInFocus.value) {
-          modifiedCircle.r = `${(Number(circle.r) * 1000 / 2) / 1000}`;
-        } else if (proximityToFocus < 0.2) {
+        if (proximityToFocus < 0.2) {
+          // modifiedCircle.r = `${(Number(circle.r) * 1000 / 1.5) / 1000}`;
           modifiedCircle.r = `${(Number(circle.r) * 1000 * (proximityToFocus * 10)) / 1000}`;
-          realSize = realSize * 2;
+          // realSize = realSize + 10 * proximityToFocus;
+          // realSize = (Number(circle.r) * 1000 * (proximityToFocus * 10)) / 1000;
         }
 
 
@@ -105,10 +114,24 @@ export default defineComponent({
         const animation: Animation = {
           attributeName: 'r',
           values: [
-            circle.r,
+            modifiedCircle.r,
             realSize,
+            modifiedCircle.r,
+            realSize,
+            // modifiedCircle.r,
+            // realSize,
+            // modifiedCircle.r,
+            // realSize,
+            // modifiedCircle.r,
             circle.r,
-            //realSize,
+
+            // circle.r,
+            // realSize,
+            // circle.r,
+
+            // modifiedCircle.r,
+            // realSize,
+            // modifiedCircle.r,
           ].join(';'),
           duration,
           // repeatCount: '1'
@@ -311,9 +334,11 @@ export default defineComponent({
       layout,
       circlesList,
       circlesListAnimated,
-      circleIndexInFocus,
-      circleInFocus,
-      onHover,
+      // circleInFocus,
+      onPointer,
+      pointerLastPositionX,
+      pointerLastPositionY,
+      svgFocus,
     }
   },
 })
