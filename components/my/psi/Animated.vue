@@ -13,6 +13,8 @@
     <v-row no-gutters>
       <div>
         {{ circleIndexInFocus }}
+        |*****|
+        <div v-if="circleInFocus">{{ circlesListAnimated[circleIndexInFocus].meta }}</div>
       </div>
     </v-row>
 
@@ -34,9 +36,15 @@ type Animation = {
   repeatCount: string,
   duration: string,
 }
+
+type Meta = {
+  proximityToFocus: number,
+}
+
 type CircleAnimated = {
   circle: Circle,
   animation: Animation,
+  meta: Meta,
 }
 
 export default defineComponent({
@@ -52,6 +60,65 @@ export default defineComponent({
       circleIndexInFocus.value = index;
     };
 
+    const circleInFocus = computed(() => {
+      if (circleIndexInFocus.value < 0) {
+        return null;
+      }
+
+      return circlesList[circleIndexInFocus.value];
+    });
+
+    const circlesListAnimated = computed(() => {
+      return circlesList.map((circle, index) => {
+        const modifiedCircle: Circle = { ...circle };
+
+        const baseMultiplyer = 1000;
+        const canvasSize = 110 * 1000;
+
+        let proximityToFocus = 1;
+        if (circleInFocus.value) {
+          const proximityX = Math.abs((Number(circleInFocus.value.cx) * baseMultiplyer) - (Number(circle.cx) * baseMultiplyer)) / canvasSize;
+          const proximityY = Math.abs((Number(circleInFocus.value.cy) * baseMultiplyer) - (Number(circle.cy) * baseMultiplyer)) / canvasSize;
+          proximityToFocus = Math.sqrt(proximityX ** 2 + proximityY ** 2);
+        }
+
+        let realSize = (Number(circle.r) * baseMultiplyer * 0.2) / baseMultiplyer;
+
+        if (index === circleIndexInFocus.value) {
+          modifiedCircle.r = `${(Number(circle.r) * 1000 / 2) / 1000}`;
+        } else if (proximityToFocus < 0.2) {
+          modifiedCircle.r = `${(Number(circle.r) * 1000 * (proximityToFocus * 10)) / 1000}`;
+          realSize = realSize * 2;
+        }
+
+
+        // const duration = `${2 - ((Number(circle.cy) * 1000) / 110000)}s`;
+        const duration = `${3 - ((Number(circle.cy) * 1000) / 110000) + ((Number(circle.cx) * 1000) / 110000)}s`;
+
+        const animation: Animation = {
+          attributeName: 'r',
+          values: [
+            realSize,
+            modifiedCircle.r,
+            realSize,
+          ].join(';'),
+          duration,
+          repeatCount: 'indefinite'
+        };
+
+        const result: CircleAnimated = {
+          circle: modifiedCircle,
+          animation,
+          meta: {
+            proximityToFocus,
+          }
+        }
+
+        return result;
+
+      });
+
+    })
 
     const circlesList: Circle[] = [
       { cx: '3.5719', cy: '3.5719', r: '3.5719' },
@@ -229,38 +296,6 @@ export default defineComponent({
       { cx: '102.66', cy: '56.362', r: '1.863' },
     ];
 
-    const circlesListAnimated = computed(() => {
-      return circlesList.map((circle, index) => {
-        const modifiedCircle: Circle = { ...circle };
-        if (index === circleIndexInFocus.value) {
-          modifiedCircle.r = `${(Number(circle.r) * 1000 / 2) / 1000}`;
-        }
-
-        const realSize = `${(Number(circle.r) * 1000 * 0.2) / 1000}`;
-
-        // const duration = `${2 - ((Number(circle.cy) * 1000) / 110000)}s`;
-        const duration = `${3 - ((Number(circle.cy) * 1000) / 110000) + ((Number(circle.cx) * 1000) / 110000)}s`;
-
-        const animation: Animation = {
-          attributeName: 'r',
-          values: [
-            realSize,
-            modifiedCircle.r,
-            realSize,
-          ].join(';'),
-          duration,
-          repeatCount: 'indefinite'
-        };
-
-        return {
-          circle: modifiedCircle,
-          animation,
-        }
-
-      });
-
-    })
-
     return {
       message,
       display,
@@ -268,6 +303,7 @@ export default defineComponent({
       circlesList,
       circlesListAnimated,
       circleIndexInFocus,
+      circleInFocus,
       onHover,
     }
   },
