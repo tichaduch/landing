@@ -58,6 +58,13 @@ export default defineComponent({
 
     const onHover = (circle: Circle, index: number, event: Event) => {
       circleIndexInFocus.value = index;
+      if (!event.target) {
+        return;
+      }
+      const circleNode = event.target as SVGCircleElement;
+      const animateNode = circleNode.firstChild as SVGAnimateElement;
+
+      animateNode.beginElement();
     };
 
     const circleInFocus = computed(() => {
@@ -98,11 +105,13 @@ export default defineComponent({
         const animation: Animation = {
           attributeName: 'r',
           values: [
+            circle.r,
             realSize,
-            modifiedCircle.r,
-            realSize,
+            circle.r,
+            //realSize,
           ].join(';'),
           duration,
+          // repeatCount: '1'
           repeatCount: 'indefinite'
         };
 
