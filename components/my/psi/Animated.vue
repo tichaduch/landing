@@ -1,26 +1,12 @@
 <template>
-  <v-card class="mt-4 pa-4">
-    <v-row no-gutters>
-      <svg @pointermove.self="onPointer" width="400" height="400" version="1.1" viewBox="0 0 105.83 105.83" xmlns="http://www.w3.org/2000/svg">
-        <g ref="psi" fill="#f00">
-          <circle v-for="({circle, animation}, index) in circlesListAnimated" :cx="circle.cx"
-            :cy="circle.cy" :r="circle.r">
-            <animate :attributeName="animation.attributeName" :values="animation.values" :dur="animation.duration" :repeatCount="animation.repeatCount" />
-          </circle>
-        </g>
-      </svg>
-    </v-row>
-    <v-row no-gutters>
-      <div>
-        |*****|
-        <div>{{ `${pointerLastPositionX} x ${pointerLastPositionY}` }}</div>
-        |*****|
-        <div>{{ svgFocus }}</div>
-
-      </div>
-    </v-row>
-
-  </v-card>
+  <svg @pointermove.self="onPointer" width="400" height="400" version="1.1" viewBox="0 0 105.83 105.83" xmlns="http://www.w3.org/2000/svg">
+    <g ref="psi" fill="#333333">
+      <circle v-for="({circle, animation}, index) in circlesListAnimated" :cx="circle.cx"
+        :cy="circle.cy" :r="circle.r">
+        <animate :attributeName="animation.attributeName" :values="animation.values" :dur="animation.duration" :repeatCount="animation.repeatCount" />
+      </circle>
+    </g>
+  </svg>
 </template>
 
 <script lang="ts">
@@ -89,7 +75,7 @@ export default defineComponent({
         const modifiedCircle: Circle = { ...circle };
 
         const baseMultiplyer = 1000;
-        const canvasSize = 110 * 1000;
+        const canvasSize = 110 * baseMultiplyer;
 
         let proximityToFocus = 1;
         if (svgFocus.value) {
@@ -102,14 +88,14 @@ export default defineComponent({
 
         if (proximityToFocus < 0.2) {
           // modifiedCircle.r = `${(Number(circle.r) * 1000 / 1.5) / 1000}`;
-          modifiedCircle.r = `${(Number(circle.r) * 1000 * (proximityToFocus * 10)) / 1000}`;
+          modifiedCircle.r = `${(Number(circle.r) * baseMultiplyer * (proximityToFocus * 10)) / baseMultiplyer}`;
           // realSize = realSize + 10 * proximityToFocus;
           // realSize = (Number(circle.r) * 1000 * (proximityToFocus * 10)) / 1000;
         }
 
 
         // const duration = `${2 - ((Number(circle.cy) * 1000) / 110000)}s`;
-        const duration = `${3 - ((Number(circle.cy) * 1000) / 110000) + ((Number(circle.cx) * 1000) / 110000)}s`;
+        const duration = `${3 - ((Number(circle.cy) * baseMultiplyer) / canvasSize) + ((Number(circle.cx) * baseMultiplyer) / canvasSize)}s`;
 
         const animation: Animation = {
           attributeName: 'r',
