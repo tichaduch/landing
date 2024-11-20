@@ -1,14 +1,17 @@
-
 <template>
+
+  <client-only>
     <v-sheet :width="psiWidth" :class="`position-fixed right-0 ${psiClass} mr-4`" color="transparent">
-    <my-psi-animated />
+      <my-psi-animated />
     </v-sheet>
-    <v-sheet height="80vh" color="red-darken-3">
-        <v-row no-gutters justify="end">
-          <v-sheet color="transparent" height="70vh" class="d-flex align-end mr-4 pt-10">
-          </v-sheet>
-        </v-row>
-    </v-sheet>
+  </client-only>
+
+  <v-sheet height="80vh" color="red-darken-3">
+    <v-row no-gutters justify="end">
+      <v-sheet color="transparent" height="70vh" class="d-flex align-end mr-4 pt-10">
+      </v-sheet>
+    </v-row>
+  </v-sheet>
 
   <v-card class="mt-n8 pa-4" tonal elevation="6" color="white" height="120vh" rounded="xl">
     test
@@ -73,5 +76,4 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

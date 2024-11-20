@@ -72,7 +72,7 @@ export default defineComponent({
       boundSvg.value = svgNode.getBoundingClientRect();
     }
 
-    const boundingWidth = ref(180);
+    const boundingWidth = ref(11);
 
     const svgFocus = computed(() => {
       if (pointerLastPositionX.value < 0) {
