@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  webapp:
+    container_name: "webapp"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    command: node .output/server/index.mjs
+    networks:
+      - main
+
+volumes:
+  database:
+
+networks:
+  main:
+    name: main
