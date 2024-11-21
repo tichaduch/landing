@@ -2,11 +2,11 @@
 
   <client-only>
     <v-sheet :width="psiWidth" :class="`position-fixed right-0 ${psiClass} mr-4`" color="transparent">
-      <my-psi-animated />
+      <my-psi-animated :svg-to-display="svgToDisplay" />
     </v-sheet>
   </client-only>
 
-  <v-sheet height="80vh" color="red-darken-3">
+  <v-sheet v-intersect="onIntersectFirstSection" height="80vh" color="red-darken-3">
     <v-row no-gutters justify="end">
       <v-sheet color="transparent" height="70vh" class="d-flex align-end mr-4 pt-10">
       </v-sheet>
@@ -17,7 +17,7 @@
     test
   </v-card>
 
-  <v-sheet color="red-darken-3" class="mt-n8" height="100px">
+  <v-sheet color="red-darken-3" class="mt-n8" height="200px">
 
   </v-sheet>
 </template>
@@ -61,16 +61,33 @@ export default defineComponent({
     });
 
     const psiClass = computed(() => {
-      if (display.mdAndUp.value) {
-        return 'mt-10';
+      switch(svgToDisplay.value) {
+        case 'psi':
+          if (display.mdAndUp.value) {
+            return 'mt-10';
+          }
+
+          return 'bottom-0 mb-10';
+        case 'tail':
+          return 'bottom-0 mb-10';
       }
 
-      return 'bottom-0 mb-10';
+    });
+
+    const firstSectionInView = ref(true);
+    const onIntersectFirstSection = (isIntersected: boolean) => {
+      firstSectionInView.value = isIntersected;
+    };
+
+    const svgToDisplay = computed(() => {
+      return firstSectionInView.value ? 'psi' : 'tail';
     });
 
     return {
+      svgToDisplay,
       psiWidth,
       psiClass,
+      onIntersectFirstSection,
     };
   },
 })

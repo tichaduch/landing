@@ -38,10 +38,28 @@ type CircleAnimated = {
 }
 
 export default defineComponent({
+  props: {
+    svgToDisplay: {
+      type: String,
+      default: 'psi',
+      validator(value: string) {
+        // The value must match one of these strings
+        /** @see https://vuejs.org/guide/components/props.html#prop-validation */
+        return ['psi', 'tail'].includes(value);
+      }
+    },
+  },
+
   setup(props, ctx) {
 
     const svgToDisplay = computed(() => {
-      return svgPsi;
+      switch(props.svgToDisplay) {
+        case 'tail':
+          return svgTail
+        case 'psi':
+        default:
+          return svgPsi
+      }
     });
 
     const widthComputed = computed(() => {
@@ -62,9 +80,6 @@ export default defineComponent({
     const boundSvg = ref({});
     const onPointer = (event: PointerEvent) => {
       const svgNode = event.target as SVGElement;
-
-      console.log(event);
-      console.log(svgNode.getBoundingClientRect());
 
       pointerLastPositionX.value = event.clientX - svgNode.getBoundingClientRect().x - svgNode.clientLeft;
       pointerLastPositionY.value = event.clientY - svgNode.getBoundingClientRect().y - svgNode.clientTop;
