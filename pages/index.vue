@@ -72,7 +72,7 @@ export default defineComponent({
             return 'mt-10';
           }
 
-          return 'bottom-0 mb-10';
+          return 'bottom-0 mb-n3';
         case 'tail':
           return 'bottom-0 mb-10';
       }
