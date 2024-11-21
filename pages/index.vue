@@ -6,7 +6,12 @@
     </v-sheet>
   </client-only>
 
-  <v-sheet v-intersect="onIntersectFirstSection" height="80vh" color="background">
+  <v-sheet v-intersect="{
+    handler: onIntersectFirstSection,
+    options: {
+      threshold: [0, 0.5, 1.0]
+    }
+  }" height="80vh" color="background">
     <v-row no-gutters justify="end">
       <v-sheet color="transparent" height="70vh" class="d-flex align-end mr-4 pt-10">
       </v-sheet>
@@ -61,7 +66,7 @@ export default defineComponent({
     });
 
     const psiClass = computed(() => {
-      switch(svgToDisplay.value) {
+      switch (svgToDisplay.value) {
         case 'psi':
           if (display.mdAndUp.value) {
             return 'mt-10';
