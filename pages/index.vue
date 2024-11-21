@@ -6,7 +6,7 @@
     </v-sheet>
   </client-only>
 
-  <v-sheet v-intersect="onIntersectFirstSection" height="80vh" color="red-darken-3">
+  <v-sheet v-intersect="onIntersectFirstSection" height="80vh" color="background">
     <v-row no-gutters justify="end">
       <v-sheet color="transparent" height="70vh" class="d-flex align-end mr-4 pt-10">
       </v-sheet>
@@ -17,7 +17,7 @@
     test
   </v-card>
 
-  <v-sheet color="red-darken-3" class="mt-n8" height="200px">
+  <v-sheet color="background" class="mt-n8" height="200px">
 
   </v-sheet>
 </template>
