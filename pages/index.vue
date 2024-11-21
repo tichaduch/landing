@@ -17,7 +17,7 @@
     test
   </v-card>
 
-  <v-sheet color="background" class="mt-n8" height="200px">
+  <v-sheet color="background" class="mt-n8" :height="mdAndUp ? '200px' : '100px'">
 
   </v-sheet>
 </template>
@@ -88,6 +88,7 @@ export default defineComponent({
       psiWidth,
       psiClass,
       onIntersectFirstSection,
+      mdAndUp: display.mdAndUp,
     };
   },
 })
