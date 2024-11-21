@@ -5,7 +5,7 @@ COPY ./ .
 RUN yarn install 
 RUN node --run build
 
-FROM node:22 as prod
+FROM node:22-slim as prod
 WORKDIR /app
 
 COPY --from=build-stage /app/package* ./
