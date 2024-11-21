@@ -1,4 +1,4 @@
-name: webapp test
+name: webapp build
 on:
   workflow_dispatch:
 jobs:
