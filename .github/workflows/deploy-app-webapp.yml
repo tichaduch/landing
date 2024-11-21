@@ -1,0 +1,9 @@
+name: webapp test
+on:
+  workflow_dispatch:
+jobs:
+  call-workflow-passing-data:
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      app: webapp
+      environment: test
