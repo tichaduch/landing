@@ -8,7 +8,6 @@
 import { defineComponent, computed, getCurrentInstance } from 'vue';
 import { useDisplay, useLayout } from 'vuetify';
 import { useAuthStore } from '@/stores/auth';
-import { useUsersStore } from '@/stores/users';
 
 export default defineComponent({
   setup(props, ctx) {
@@ -19,7 +18,6 @@ export default defineComponent({
     const display = useDisplay();
     const layout = useLayout();
     const authStore = useAuthStore();
-    const usersStore = useUsersStore();
 
     return {
       message,

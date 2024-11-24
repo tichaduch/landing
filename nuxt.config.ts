@@ -19,14 +19,24 @@ export default defineNuxtConfig({
     transpile: ['vuetify'],
   },
   modules: [
+    '@pinia/nuxt',
+    '@nuxtjs/apollo',
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
         // @ts-expect-error
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
-    //...
   ],
+
+  apollo: {
+    clients: {
+      default: {
+        httpEndpoint: '/graphql'
+      }
+    },
+  },
+
   vite: {
     vue: {
       template: {
