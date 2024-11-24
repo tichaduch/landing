@@ -6,7 +6,9 @@ services:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - 3000:3000
+      - 3001:3001
+    environment:
+      - PORT=3001
     command: node .output/server/index.mjs
     networks:
       - main
