@@ -2,6 +2,13 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  nitro: {
+    routeRules: {
+      '/api/**': {
+        proxy: 'http://localhost:3000/api/**',
+      }
+    }
+  },
   app: {
     head: {
       title: 'tichaduch',
