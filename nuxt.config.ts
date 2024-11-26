@@ -45,6 +45,17 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    /**
+     * The legacy JS API that is default is deprecated
+     * @see https://vite.dev/config/shared-options#css-preprocessoroptions
+     */
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        }
+      }
+    },
     vue: {
       template: {
         transformAssetUrls,
