@@ -1,8 +1,10 @@
 <template>
   <v-app v-scroll="onScroll" light>
-    <v-system-bar v-if="scrollTop < 10" :height="scrollTop > 10 ? 0 : 8" color="red-darken-3">
-      <v-divider color="white" thickness="1" class="border-opacity-100 mt-8 mx-3"></v-divider>
-    </v-system-bar>
+    <client-only>
+      <v-system-bar v-if="scrollTop < 10" :height="scrollTop > 10 ? 0 : 8" color="red-darken-3">
+        <v-divider color="white" thickness="1" class="border-opacity-100 mt-8 mx-3"></v-divider>
+      </v-system-bar>
+    </client-only>
 
     <v-app-bar
       class="py-1"
