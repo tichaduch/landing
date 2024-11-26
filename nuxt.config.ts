@@ -2,12 +2,8 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  nitro: {
-    routeRules: {
-      '/api/**': {
-        proxy: process.env?.API_PROXY || 'http://localhost:3000/api/**',
-      }
-    }
+  runtimeConfig: {
+    apiProxy: ''
   },
   app: {
     head: {

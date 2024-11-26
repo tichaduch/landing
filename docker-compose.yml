@@ -9,6 +9,7 @@ services:
       - 3001:3001
     environment:
       - PORT=3001
+      - NUXT_API_PROXY=http://template-webapp:3000
     command: node .output/server/index.mjs
     networks:
       - main
