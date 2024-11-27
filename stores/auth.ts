@@ -21,6 +21,15 @@ export const useAuthStore = defineStore('auth', {
     async login(login: string, password: string) {
       await useFetch('/api/auth/login', { method: 'post', body: { login, password } });
       await this.fetchUserData();
+
+      const MY_HOST = useRuntimeConfig().public.myHost;
+      if (MY_HOST) {
+        await navigateTo(`${MY_HOST}/${'my'}`, {
+          external: true
+        });
+        return;
+      }
+
       const router = useRouter();
       router.replace({ name: 'my' })
     },

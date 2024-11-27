@@ -13,6 +13,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const SIGNUP_PATH_NAME = 'signup';
   const MY_PATH_NAME = 'my';
   const route = useRoute();
+  const MY_HOST = useRuntimeConfig().public.myHost;
 
   const onLoginPage = to.name === LOGIN_PATH_NAME;
   const onSignUpPage = to.name === SIGNUP_PATH_NAME;
@@ -21,6 +22,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   if (loggedIn && (onLoginPage || onSignUpPage || onLandingPage)) {
     try {
+      if (MY_HOST) {
+        return navigateTo(`${MY_HOST}/${MY_PATH_NAME}`, {
+          external: true
+        });
+      }
+
       return navigateTo({ name: MY_PATH_NAME });
     } catch (e) {
       //
